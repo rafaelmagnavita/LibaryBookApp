@@ -16,5 +16,12 @@ namespace LibaryAux.Entities
         public string ISBN { get; set; }
         public int PublishYear { get; set; }
 
+        public Book(string title, string author, string isbn, int publishYear)
+        {
+            Title = title;
+            Author = author;
+            ISBN = isbn;
+            PublishYear = publishYear;
+        }
     }
 }

@@ -90,6 +90,9 @@ namespace LibaryAux
                     case 1:
                         book = db.Books.SingleOrDefaultAsync(bk => bk.Title.Contains(param.ToString())).GetAwaiter().GetResult();
                         break;
+                    case 2:
+                        book = db.Books.SingleOrDefaultAsync(bk => bk.ISBN.ToLower().Equals(param.ToString().ToLower())).GetAwaiter().GetResult();
+                        break;
                     case 3:
                         book = db.Books.SingleOrDefaultAsync(bk => bk.Id.Equals(Convert.ToInt32(param.ToString()))).GetAwaiter().GetResult();
                         break;

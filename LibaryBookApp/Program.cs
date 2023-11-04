@@ -10,14 +10,7 @@ namespace LibaryBookApp
         {
             ShowOptions();
             var command = Console.ReadLine();
-            var commandCheck = int.TryParse(command, out int commandInt);
-
-            while (!commandCheck)
-            {
-                Console.WriteLine("Invalid Input, please digit a number!");
-                command = Console.ReadLine();
-                commandCheck = int.TryParse(command, out commandInt);
-            }
+            int commandInt = intCheck(command);
 
             SelectMethod(commandInt);
 
@@ -83,6 +76,52 @@ namespace LibaryBookApp
                 {
                     Console.WriteLine("Error While Registrating User!");
                     RegisterUser();
+                }
+            }
+        }
+
+        public static int intCheck(string intStr)
+        {
+            var intCheck = int.TryParse(intStr, out int intValue);
+            while (!intCheck)
+            {
+                Console.WriteLine("Invalid Input, please digit a number!");
+                intStr = Console.ReadLine();
+                intCheck = int.TryParse(intStr, out intValue);
+            }
+            return intValue;
+        }
+
+        public static void RegisterBook()
+        {
+            Console.WriteLine("------------------- Let's Add a New Book ---------------------");
+            Console.WriteLine("Type Book Title");
+            var Title = Console.ReadLine().ToString();
+            Console.WriteLine("Type Author");
+            var Author = Console.ReadLine().ToString();
+            Console.WriteLine("Type ISBN");
+            var ISBN = Console.ReadLine().ToString(); 
+            Console.WriteLine("Type Publish Year");
+            var yearRaw = Console.ReadLine();
+            int year = intCheck(yearRaw);
+
+            if (DbOps.GetBook(2, ISBN) != null)
+            {
+                Console.WriteLine("Book Already Registered!");
+                RegisterBook();
+            }
+            else
+            {
+                Book book = new Book(Title, Author, ISBN, year);
+                bool success = DbOps.AddBook(book);
+                if (success)
+                {
+                    Console.WriteLine("Book Registered!");
+                }
+                else
+                {
+                    Console.WriteLine("Error While Registrating Book!");
+                    RegisterBook();
                 }
             }
         }
