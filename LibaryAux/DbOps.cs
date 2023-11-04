@@ -121,10 +121,31 @@ namespace LibaryAux
 
         public static bool UserExists(string Email)
         {
-            var user = db.Users.SingleOrDefaultAsync(bk => bk.Email.ToLower().Equals(Email.ToLower())).GetAwaiter().GetResult();
-            if (user != null)
-                return true;
-            return false;
+            try
+            {
+                var user = db.Users.SingleOrDefaultAsync(bk => bk.Email.ToLower().Equals(Email.ToLower())).GetAwaiter().GetResult();
+                if (user != null)
+                    return true;
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public static User GetUser(string Email)
+        {
+            try
+            {
+                var user = db.Users.SingleOrDefaultAsync(bk => bk.Email.ToLower().Equals(Email.ToLower())).GetAwaiter().GetResult();
+                return user;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
         }
     }
 }

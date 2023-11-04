@@ -23,5 +23,20 @@ namespace LibaryAux.Entities
         public DateTime LoanDate { get; set; }
         public int LoanPeriod { get; set; }
 
+        public Loan(int user, int book, DateTime? loanDate = null, int? loanPeriod = null)
+        {
+            BookReturned = false;
+            UserId = user;
+            BookId = book;
+            if (loanDate != null)
+                LoanDate = (DateTime)loanDate;
+            else
+                LoanDate = DateTime.Now;
+            if (loanPeriod != null)
+                LoanPeriod = (int)LoanPeriod;
+            else
+                LoanPeriod = 90;
+        }
+
     }
 }

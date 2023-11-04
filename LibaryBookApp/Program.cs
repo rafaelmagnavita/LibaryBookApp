@@ -38,8 +38,10 @@ namespace LibaryBookApp
                     RegisterUser();
                     break;
                 case 2:
+                    RegisterBook();
                     break;
                 case 3:
+                    LoanBook();
                     break;
                 case 4:
                     break;
@@ -68,7 +70,7 @@ namespace LibaryBookApp
             {
                 User user = new User(userName, userEmail);
                 bool success = DbOps.AddUser(user);
-                if(success)
+                if (success)
                 {
                     Console.WriteLine("User Registered!");
                 }
@@ -92,6 +94,30 @@ namespace LibaryBookApp
             return intValue;
         }
 
+        public static DateTime dateCheck(string dateStr)
+        {
+            var dateCheck = DateTime.TryParse(dateStr, out DateTime dateValue);
+            while (!dateCheck)
+            {
+                Console.WriteLine("Invalid Input, please digit a valid date!");
+                dateStr = Console.ReadLine();
+                dateCheck = DateTime.TryParse(dateStr, out dateValue);
+            }
+            return dateValue;
+        }
+
+        public static string yesOrNoBox(string content)
+        {
+            Console.WriteLine($"{content} (Y/N)?");
+            var response = Console.ReadLine();
+            while (response.Trim().ToLower() != "y" || response.Trim().ToLower() != "n")
+            {
+                Console.WriteLine("Invalid answer!");
+                response = Console.ReadLine();
+            }
+            return response;
+        }
+
         public static void RegisterBook()
         {
             Console.WriteLine("------------------- Let's Add a New Book ---------------------");
@@ -100,7 +126,7 @@ namespace LibaryBookApp
             Console.WriteLine("Type Author");
             var Author = Console.ReadLine().ToString();
             Console.WriteLine("Type ISBN");
-            var ISBN = Console.ReadLine().ToString(); 
+            var ISBN = Console.ReadLine().ToString();
             Console.WriteLine("Type Publish Year");
             var yearRaw = Console.ReadLine();
             int year = intCheck(yearRaw);
@@ -124,6 +150,83 @@ namespace LibaryBookApp
                     RegisterBook();
                 }
             }
+        }
+
+
+        public static void LoanBook()
+        {
+            Console.WriteLine("------------------- Let's Register a Loan ---------------------");
+
+            var user = FindUser();
+
+            var book = FindBook();
+
+            DateTime? loanDate = null;
+            var customLoanDate = yesOrNoBox("Set Custom Loan Date");
+            if (customLoanDate.Trim().ToLower() == "y")
+            {
+                loanDate = dateCheck(Console.ReadLine());
+            }
+
+            int? loanPeriod = null;
+            var customLoanPeriod = yesOrNoBox("Set Custom Loan Period, standart is 60 days");
+            if (customLoanPeriod.Trim().ToLower() == "y")
+            {
+                loanPeriod = intCheck(Console.ReadLine());
+            }
+
+            Loan loan = new Loan(user.Id, book.Id, loanDate, loanPeriod);
+
+            bool success = DbOps.AddLoan(loan);
+            if (success)
+            {
+                Console.WriteLine("Book Loaned!");
+            }
+            else
+            {
+                Console.WriteLine("Error While Loaning Book!");
+                LoanBook();
+            }
+        }
+
+        public static Book FindBook()
+        {
+            Console.WriteLine("Chose an Searcher for Book:");
+            Console.WriteLine("1. By Book Title");
+            Console.WriteLine("2. By ISBN");
+            Console.WriteLine("3. By Id");
+            int command = intCheck(Console.ReadLine());
+            while (command < 1 && command > 3)
+            {
+                Console.WriteLine("Command should be between 1 and 3!");
+                command = intCheck(Console.ReadLine());
+            }
+            Console.WriteLine("Enter searcher book value:");
+            object param = Console.ReadLine();
+
+            var book = DbOps.GetBook(command, param);
+            if (book != null)
+            {
+                return book;
+            }
+            else
+            {
+                Console.WriteLine("Book Not Found!!!!");
+                return FindBook();
+            }
+        }
+
+        public static User FindUser()
+        {
+            Console.WriteLine("Type User Email:");
+            var user = DbOps.GetUser(Console.ReadLine());
+            while (user == null)
+            {
+                Console.WriteLine("User Not Found!!!!");
+                Console.WriteLine("Type User Email:");
+                user = DbOps.GetUser(Console.ReadLine());
+            }
+            return user;
         }
     }
 }
