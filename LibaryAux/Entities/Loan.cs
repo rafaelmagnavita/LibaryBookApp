@@ -13,7 +13,7 @@ namespace LibaryAux.Entities
     {
         [Key]
         public int Id { get; set; }
-
+        public bool BookReturned { get; set; }
         public int UserId { get; set; }
         [ForeignKey("UserId")]
         public virtual User User { get; set; }
