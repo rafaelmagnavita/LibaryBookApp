@@ -6,76 +6,81 @@ using System.Linq;
 
 namespace LibaryAux
 {
-    public class Main
+    public static class DbOps
     {
-        private LibaryContext db = new LibaryContext();
+        private static LibaryContext db = new LibaryContext();
 
-        public void AddUser(User user)
+        public static bool AddUser(User user)
         {
             try
             {
                 db.Users.Add(user);
                 db.SaveChanges();
+                return true;
             }
             catch (Exception ex)
             {
-
+                return false;
             }
         }
 
-        public void AddBook(Book book)
+        public static bool AddBook(Book book)
         {
             try
             {
                 db.Books.Add(book);
                 db.SaveChanges();
+                return true;
             }
             catch (Exception ex)
             {
-
+                return false;
             }
         }
 
-        public void AddLoan(Loan loan)
+        public static bool AddLoan(Loan loan)
         {
             try
             {
                 db.Loans.Add(loan);
                 db.SaveChanges();
+                return true;
             }
             catch (Exception ex)
             {
-
+                return false;
             }
         }
 
-        public void EditLoan(Loan loan)
+        public static bool EditLoan(Loan loan)
         {
             try
             {
                 db.Entry(loan).State = EntityState.Modified;
                 db.SaveChanges();
+                return true;
             }
             catch (Exception ex)
             {
-
+                return false;
             }
         }
 
-        public void RemoveBook(Book book)
+        public static bool RemoveBook(Book book)
         {
             try
             {
                 db.Books.Remove(book);
                 db.SaveChanges();
+                return true;
             }
             catch (Exception ex)
             {
-
+                return false;
             }
         }
 
-        public Book GetBook(int command, object param)
+        public static Book GetBook(int command, object param)
         {
             try
             {
@@ -97,7 +102,7 @@ namespace LibaryAux
             }
         }
 
-        public System.Collections.Generic.List<Book> GetAllBooks()
+        public static System.Collections.Generic.List<Book> GetAllBooks()
         {
             try
             {
@@ -109,6 +114,14 @@ namespace LibaryAux
             {
                 return new System.Collections.Generic.List<Book>();
             }
+        }
+
+        public static bool UserExists(string Email)
+        {
+            var user = db.Users.SingleOrDefaultAsync(bk => bk.Email.ToLower().Equals(Email.ToLower())).GetAwaiter().GetResult();
+            if (user != null)
+                return true;
+            return false;
         }
     }
 }
