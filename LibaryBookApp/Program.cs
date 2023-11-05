@@ -48,10 +48,13 @@ namespace LibaryBookApp
                     ReturnBook();
                     break;
                 case 5:
+                    RemoveBook();
                     break;
                 case 6:
+                    ListBook();
                     break;
                 case 7:
+                    ListAllBooks();
                     break;
             }
         }
@@ -82,6 +85,34 @@ namespace LibaryBookApp
                     RegisterUser();
                 }
             }
+        }
+
+        public static void ListAllBooks()
+        {
+            var books = DbOps.GetAllBooks();
+            Console.WriteLine($"List of All Libary Books:");
+            foreach (var book in books)
+            {
+                Console.WriteLine($"---------------------------------");
+                Console.WriteLine($"ID - {book.Id}");
+                Console.WriteLine($"Title - {book.Title}");
+                Console.WriteLine($"Author - {book.Author}");
+                Console.WriteLine($"Publish Year - {book.PublishYear}");
+                Console.WriteLine($"ISBN - {book.ISBN}");
+                Console.WriteLine($"---------------------------------");
+            }
+            Console.WriteLine($"End of the List!");
+        }
+
+        public static void ListBook()
+        {
+            var book = FindBook();
+            Console.WriteLine($"ID - {book.Id}");
+            Console.WriteLine($"Title - {book.Title}");
+            Console.WriteLine($"Author - {book.Author}");
+            Console.WriteLine($"Publish Year - {book.PublishYear}");
+            Console.WriteLine($"ISBN - {book.ISBN}");
+
         }
 
         public static int intCheck(string intStr)
