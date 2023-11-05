@@ -9,22 +9,34 @@ namespace LibaryBookApp
     {
         static void Main(string[] args)
         {
+            StartApp();
+        }
+        public static void StartApp()
+        {
             bool restart = true;
 
             while (restart)
             {
-
+                Console.Clear();
                 ShowOptions();
-                var command = Console.ReadLine();
+                var command = ReadInput();
                 int commandInt = intCheck(command);
 
                 SelectMethod(commandInt);
 
                 restart = yesOrNoBox("Do you want to go back to main menu?") == "y";
             }
-
-
-
+        }
+        public static string ReadInput()
+        {
+            var input = Console.ReadLine();
+            if (input.ToLower().Trim() == "menu")
+            {
+                Console.Clear();
+                Console.WriteLine("Returning to main menu...");
+                StartApp();
+            }
+            return input.ToString();
         }
 
         public static void ShowOptions()
@@ -38,6 +50,7 @@ namespace LibaryBookApp
             Console.WriteLine("5. Remove Book");
             Console.WriteLine("6. List Book");
             Console.WriteLine("7. List All Books");
+            Console.WriteLine("Type 'menu' anytime you want to go back to this menu!");
             Console.WriteLine("---------------------------------------------------------------");
         }
 
@@ -73,9 +86,9 @@ namespace LibaryBookApp
         {
             Console.WriteLine("------------------- Let's Add a New User ---------------------");
             Console.WriteLine("Type Name");
-            var userName = Console.ReadLine().ToString();
+            var userName = ReadInput().ToString();
             Console.WriteLine("Type Email");
-            var userEmail = Console.ReadLine().ToString();
+            var userEmail = ReadInput().ToString();
             if (DbOps.UserExists(userEmail))
             {
                 Console.WriteLine("User Already Exists!");
@@ -131,7 +144,7 @@ namespace LibaryBookApp
             while (!intCheck)
             {
                 Console.WriteLine("Invalid Input, please digit a number!");
-                intStr = Console.ReadLine();
+                intStr = ReadInput();
                 intCheck = int.TryParse(intStr, out intValue);
             }
             return intValue;
@@ -143,7 +156,7 @@ namespace LibaryBookApp
             while (!dateCheck)
             {
                 Console.WriteLine("Invalid Input, please digit a valid date!");
-                dateStr = Console.ReadLine();
+                dateStr = ReadInput();
                 dateCheck = DateTime.TryParse(dateStr, out dateValue);
             }
             return dateValue;
@@ -152,11 +165,11 @@ namespace LibaryBookApp
         public static string yesOrNoBox(string content)
         {
             Console.WriteLine($"{content} (Y/N)?");
-            var response = Console.ReadLine();
+            var response = ReadInput();
             while (response.Trim().ToLower() != "y" && response.Trim().ToLower() != "n")
             {
                 Console.WriteLine("Invalid answer!");
-                response = Console.ReadLine();
+                response = ReadInput();
             }
             return response.Trim().ToLower();
         }
@@ -165,13 +178,13 @@ namespace LibaryBookApp
         {
             Console.WriteLine("------------------- Let's Add a New Book ---------------------");
             Console.WriteLine("Type Book Title");
-            var Title = Console.ReadLine().ToString();
+            var Title = ReadInput().ToString();
             Console.WriteLine("Type Author");
-            var Author = Console.ReadLine().ToString();
+            var Author = ReadInput().ToString();
             Console.WriteLine("Type ISBN");
-            var ISBN = Console.ReadLine().ToString();
+            var ISBN = ReadInput().ToString();
             Console.WriteLine("Type Publish Year");
-            var yearRaw = Console.ReadLine();
+            var yearRaw = ReadInput();
             int year = intCheck(yearRaw);
 
             if (DbOps.GetBook(2, ISBN) != null)
@@ -208,14 +221,14 @@ namespace LibaryBookApp
             var customLoanDate = yesOrNoBox("Set Custom Loan Date");
             if (customLoanDate.Trim().ToLower() == "y")
             {
-                loanDate = dateCheck(Console.ReadLine());
+                loanDate = dateCheck(ReadInput());
             }
 
             int? loanPeriod = null;
             var customLoanPeriod = yesOrNoBox("Set Custom Loan Period, standart is 60 days");
             if (customLoanPeriod.Trim().ToLower() == "y")
             {
-                loanPeriod = intCheck(Console.ReadLine());
+                loanPeriod = intCheck(ReadInput());
             }
 
             Loan loan = new Loan(user.Id, book.Id, loanDate, loanPeriod);
@@ -243,22 +256,22 @@ namespace LibaryBookApp
                 Console.WriteLine($"Loan Id: {loan.Id} - Book : {loan.Book.Title}");
             }
             Console.WriteLine("Type the Id one of the loans above");
-            int id = intCheck(Console.ReadLine());
-            while(!activeLoans.Any(a => a.Id.Equals(id)))
+            int id = intCheck(ReadInput());
+            while (!activeLoans.Any(a => a.Id.Equals(id)))
             {
                 Console.WriteLine("Please, choose a valid Id!");
-                id = intCheck(Console.ReadLine());
+                id = intCheck(ReadInput());
             }
 
             var selectedLoan = activeLoans.Where(a => a.Id.Equals(id)).FirstOrDefault();
 
             string confirmReturn = yesOrNoBox($"Confirm return of {selectedLoan.Book.Title} for {user.Name}");
 
-            if(confirmReturn.Equals("y"))
+            if (confirmReturn.Equals("y"))
             {
                 selectedLoan.BookReturned = true;
                 var success = DbOps.EditLoan(selectedLoan);
-                if(success)
+                if (success)
                 {
                     Console.WriteLine("Book Returned!");
                 }
@@ -274,7 +287,7 @@ namespace LibaryBookApp
         {
             var book = FindBook();
             string confirmRemove = yesOrNoBox($"Confirm removing book {book.Title}?");
-            if(confirmRemove.Equals("y"))
+            if (confirmRemove.Equals("y"))
             {
                 var success = DbOps.RemoveBook(book);
                 if (success)
@@ -294,14 +307,14 @@ namespace LibaryBookApp
             Console.WriteLine("1. By Book Title");
             Console.WriteLine("2. By ISBN");
             Console.WriteLine("3. By Id");
-            int command = intCheck(Console.ReadLine());
+            int command = intCheck(ReadInput());
             while (command < 1 && command > 3)
             {
                 Console.WriteLine("Command should be between 1 and 3!");
-                command = intCheck(Console.ReadLine());
+                command = intCheck(ReadInput());
             }
             Console.WriteLine("Enter searcher book value:");
-            object param = Console.ReadLine();
+            object param = ReadInput();
 
             var book = DbOps.GetBook(command, param);
             if (book != null)
@@ -318,12 +331,12 @@ namespace LibaryBookApp
         public static User FindUser()
         {
             Console.WriteLine("Type User Email:");
-            var user = DbOps.GetUser(Console.ReadLine());
+            var user = DbOps.GetUser(ReadInput());
             while (user == null)
             {
                 Console.WriteLine("User Not Found!!!!");
                 Console.WriteLine("Type User Email:");
-                user = DbOps.GetUser(Console.ReadLine());
+                user = DbOps.GetUser(ReadInput());
             }
             return user;
         }
