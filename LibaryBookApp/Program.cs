@@ -9,11 +9,21 @@ namespace LibaryBookApp
     {
         static void Main(string[] args)
         {
-            ShowOptions();
-            var command = Console.ReadLine();
-            int commandInt = intCheck(command);
+            bool restart = true;
 
-            SelectMethod(commandInt);
+            while (restart)
+            {
+
+                ShowOptions();
+                var command = Console.ReadLine();
+                int commandInt = intCheck(command);
+
+                SelectMethod(commandInt);
+
+                restart = yesOrNoBox("Do you want to go back to main menu?") == "y";
+            }
+
+
 
         }
 
@@ -143,7 +153,7 @@ namespace LibaryBookApp
         {
             Console.WriteLine($"{content} (Y/N)?");
             var response = Console.ReadLine();
-            while (response.Trim().ToLower() != "y" || response.Trim().ToLower() != "n")
+            while (response.Trim().ToLower() != "y" && response.Trim().ToLower() != "n")
             {
                 Console.WriteLine("Invalid answer!");
                 response = Console.ReadLine();
