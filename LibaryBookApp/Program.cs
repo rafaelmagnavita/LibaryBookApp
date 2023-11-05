@@ -229,6 +229,24 @@ namespace LibaryBookApp
 
         }
 
+        public static void RemoveBook()
+        {
+            var book = FindBook();
+            string confirmRemove = yesOrNoBox($"Confirm removing book {book.Title}?");
+            if(confirmRemove.Equals("y"))
+            {
+                var success = DbOps.RemoveBook(book);
+                if (success)
+                {
+                    Console.WriteLine("Book Removed!");
+                }
+                else
+                {
+                    Console.WriteLine("Error while removing book!");
+                }
+            }
+        }
+
         public static Book FindBook()
         {
             Console.WriteLine("Chose an Searcher for Book:");
