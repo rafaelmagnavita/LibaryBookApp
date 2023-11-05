@@ -1,6 +1,7 @@
 ﻿using LibaryAux;
 using LibaryAux.Entities;
 using System;
+using System.Linq;
 
 namespace LibaryBookApp
 {
@@ -44,6 +45,7 @@ namespace LibaryBookApp
                     LoanBook();
                     break;
                 case 4:
+                    ReturnBook();
                     break;
                 case 5:
                     break;
@@ -115,7 +117,7 @@ namespace LibaryBookApp
                 Console.WriteLine("Invalid answer!");
                 response = Console.ReadLine();
             }
-            return response;
+            return response.Trim().ToLower();
         }
 
         public static void RegisterBook()
@@ -187,6 +189,44 @@ namespace LibaryBookApp
                 Console.WriteLine("Error While Loaning Book!");
                 LoanBook();
             }
+        }
+
+        public static void ReturnBook()
+        {
+            Console.WriteLine("------------------- Let's Return a Book ---------------------");
+            var user = FindUser();
+            var activeLoans = DbOps.GetActiveLoansByUserId(user.Id);
+            Console.WriteLine("------------------- List of User's Loaned Books ---------------------");
+            foreach (var loan in activeLoans)
+            {
+                Console.WriteLine($"Loan Id: {loan.Id} - Book : {loan.Book.Title}");
+            }
+            Console.WriteLine("Type the Id one of the loans above");
+            int id = intCheck(Console.ReadLine());
+            while(!activeLoans.Any(a => a.Id.Equals(id)))
+            {
+                Console.WriteLine("Please, choose a valid Id!");
+                id = intCheck(Console.ReadLine());
+            }
+
+            var selectedLoan = activeLoans.Where(a => a.Id.Equals(id)).FirstOrDefault();
+
+            string confirmReturn = yesOrNoBox($"Confirm return of {selectedLoan.Book.Title} for {user.Name}");
+
+            if(confirmReturn.Equals("y"))
+            {
+                selectedLoan.BookReturned = true;
+                var success = DbOps.EditLoan(selectedLoan);
+                if(success)
+                {
+                    Console.WriteLine("Book Returned!");
+                }
+                else
+                {
+                    Console.WriteLine("Error while returning!");
+                }
+            }
+
         }
 
         public static Book FindBook()

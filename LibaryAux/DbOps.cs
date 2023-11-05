@@ -2,6 +2,7 @@
 using LibaryAux.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LibaryAux
@@ -105,7 +106,7 @@ namespace LibaryAux
             }
         }
 
-        public static System.Collections.Generic.List<Book> GetAllBooks()
+        public static List<Book> GetAllBooks()
         {
             try
             {
@@ -115,7 +116,7 @@ namespace LibaryAux
             }
             catch (Exception ex)
             {
-                return new System.Collections.Generic.List<Book>();
+                return new List<Book>();
             }
         }
 
@@ -144,6 +145,20 @@ namespace LibaryAux
             catch (Exception)
             {
                 return null;
+            }
+
+        }
+
+        public static List<Loan> GetActiveLoansByUserId(int userId)
+        {
+            try
+            {
+                var loans = db.Loans.Where(lo => lo.UserId.Equals(userId) && !lo.BookReturned).ToListAsync().GetAwaiter().GetResult().ToList();
+                return loans;
+            }
+            catch (Exception)
+            {
+                return new List<Loan>();
             }
 
         }
