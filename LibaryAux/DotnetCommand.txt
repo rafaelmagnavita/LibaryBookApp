@@ -1,0 +1,4 @@
+cd C:\Users\rafael.magnavita\source\repos\LibaryBookApp\LibaryAux
+dotnet tool install --global dotnet-ef   # Install EF Core tools if not installed
+dotnet ef migrations add YourMigrationName  # Create a new migration
+dotnet ef database update                 # Apply the migration to the database

@@ -23,5 +23,8 @@ namespace LibaryAux.Entities
             ISBN = isbn;
             PublishYear = publishYear;
         }
+        public Book()
+        {
+        }
     }
 }

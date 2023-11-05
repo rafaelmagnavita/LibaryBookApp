@@ -37,6 +37,9 @@ namespace LibaryAux.Entities
             else
                 LoanPeriod = 90;
         }
+        public Loan()
+        {
+        }
 
     }
 }
