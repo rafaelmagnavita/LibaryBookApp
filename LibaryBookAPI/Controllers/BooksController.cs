@@ -25,8 +25,72 @@ namespace LibaryBookAPI.Controllers
                 else
                 {
                     Book book = DbOps.GetBook(command.Value, searchValue);
-                    return JsonConvert.SerializeObject(book);
+                    if (book != null)
+                        return JsonConvert.SerializeObject(book);
+                    else
+                        return 404;
                 }
+            }
+            catch (Exception ex)
+            {
+                return 500;
+            }
+        }
+
+        [HttpPost]
+        public object Add(string jsonObject)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(jsonObject))
+                    return 400;
+
+                var book = JsonConvert.DeserializeObject<Book>(jsonObject);
+
+                bool success = DbOps.AddBook(book);
+
+                if(success)
+                {
+                    return 200;
+                }
+                else
+                {
+                    return 404;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return 500;
+            }
+        }
+
+        [HttpPost]
+        public object Delete(int command, string searchValue)
+        {
+            try
+            {
+                if ((command < 1 || command > 3 ) || string.IsNullOrEmpty(searchValue))
+                {
+                    return 404;
+                }
+
+                var book = DbOps.GetBook(command, searchValue);
+
+                if (book == null)
+                    return 404;
+
+                bool success = DbOps.RemoveBook(book);
+
+                if (success)
+                {
+                    return 200;
+                }
+                else
+                {
+                    return 404;
+                }
+
             }
             catch (Exception ex)
             {

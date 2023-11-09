@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static LibaryAux.Enums.SearchEnums;
 
 namespace LibaryAux
 {
@@ -88,13 +89,13 @@ namespace LibaryAux
                 Book book = null;
                 switch (command)
                 {
-                    case 1:
+                    case (int)BookSearchCommand.TITLE:
                         book = db.Books.SingleOrDefaultAsync(bk => bk.Title.Contains(param.ToString())).GetAwaiter().GetResult();
                         break;
-                    case 2:
+                    case (int)BookSearchCommand.ISBN:
                         book = db.Books.SingleOrDefaultAsync(bk => bk.ISBN.ToLower().Equals(param.ToString().ToLower())).GetAwaiter().GetResult();
                         break;
-                    case 3:
+                    case (int)BookSearchCommand.ID:
                         book = db.Books.SingleOrDefaultAsync(bk => bk.Id.Equals(Convert.ToInt32(param.ToString()))).GetAwaiter().GetResult();
                         break;
                 }
