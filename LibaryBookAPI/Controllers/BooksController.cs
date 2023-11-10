@@ -38,18 +38,21 @@ namespace LibaryBookAPI.Controllers
         }
 
         [HttpPost]
-        public object Add(string jsonObject)
+        public object Add(Book book)
         {
             try
             {
-                if (string.IsNullOrEmpty(jsonObject))
-                    return 400;
+                //if (string.IsNullOrEmpty(jsonObject))
+                //    return 400;
 
-                var book = JsonConvert.DeserializeObject<Book>(jsonObject);
+                //var book = JsonConvert.DeserializeObject<Book>(jsonObject);
+
+                if (book == null)
+                    return 400;
 
                 bool success = DbOps.AddBook(book);
 
-                if(success)
+                if (success)
                 {
                     return 200;
                 }
@@ -65,12 +68,12 @@ namespace LibaryBookAPI.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpDelete]
         public object Delete(int command, string searchValue)
         {
             try
             {
-                if ((command < 1 || command > 3 ) || string.IsNullOrEmpty(searchValue))
+                if ((command < 1 || command > 3) || string.IsNullOrEmpty(searchValue))
                 {
                     return 404;
                 }
