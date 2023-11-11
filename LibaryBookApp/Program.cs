@@ -1,5 +1,6 @@
 ﻿using LibaryAux;
 using LibaryAux.Entities;
+using LibaryAux.Enums;
 using System;
 using System.Linq;
 
@@ -308,8 +309,10 @@ namespace LibaryBookApp
             Console.WriteLine("2. By ISBN");
             Console.WriteLine("3. By Id");
             int command = intCheck(ReadInput());
-            while (command < 1 && command > 3)
+            var maxEnumLenght = Enum.GetValues(typeof(SearchEnums.BookSearchCommand)).Length;
+            while (command < 1 || command > maxEnumLenght)
             {
+
                 Console.WriteLine("Command should be between 1 and 3!");
                 command = intCheck(ReadInput());
             }
