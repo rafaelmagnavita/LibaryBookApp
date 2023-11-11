@@ -11,7 +11,7 @@ namespace LibaryAux.Entities
     public class User
     {
         [Key]
-        public int Id { get; set; }
+        public int Id { get; private set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public User(string name, string email)

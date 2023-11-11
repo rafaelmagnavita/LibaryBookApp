@@ -12,7 +12,7 @@ namespace LibaryAux.Entities
     public class Loan
     {
         [Key]
-        public int Id { get; set; }
+        public int Id { get; private set; }
         public bool BookReturned { get; set; }
         public int UserId { get; set; }
         [ForeignKey("UserId")]

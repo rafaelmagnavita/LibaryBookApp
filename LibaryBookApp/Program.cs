@@ -1,6 +1,7 @@
 ﻿using LibaryAux;
 using LibaryAux.Entities;
 using LibaryAux.Enums;
+using LibaryAux.Repository;
 using System;
 using System.Linq;
 
@@ -113,7 +114,9 @@ namespace LibaryBookApp
 
         public static void ListAllBooks()
         {
-            var books = DbOps.GetAllBooks();
+            //var books = DbOps.GetAllBooks();
+            BookRepository bookRepo = new BookRepository();
+            var books = bookRepo.FindAll();
             Console.WriteLine($"List of All Libary Books:");
             foreach (var book in books)
             {
@@ -226,7 +229,7 @@ namespace LibaryBookApp
             }
 
             int? loanPeriod = null;
-            var customLoanPeriod = yesOrNoBox("Set Custom Loan Period, standart is 60 days");
+            var customLoanPeriod = yesOrNoBox("Set Custom Loan Period, standart is 90 days");
             if (customLoanPeriod.Trim().ToLower() == "y")
             {
                 loanPeriod = intCheck(ReadInput());
