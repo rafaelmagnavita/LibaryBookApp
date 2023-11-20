@@ -4,27 +4,38 @@ using LibaryAux.Enums;
 using LibaryAux.Repository;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LibaryBookApp
 {
     public class Program
     {
-        static void Main(string[] args)
+        public static BookRepository _bookRepository;
+        public static LoanRepository _loanRepository;
+        public static UserLoginRepository _userRepository;
+        public static void Initialize()
         {
-            StartApp();
+            _bookRepository = new BookRepository();
+            _loanRepository = new LoanRepository();
+            _userRepository = new UserLoginRepository();
         }
-        public static void StartApp()
+        static async Task Main(string[] args)
+        {
+            await StartApp();
+        }
+        public static async Task StartApp()
         {
             bool restart = true;
 
             while (restart)
             {
                 Console.Clear();
+                Initialize();
                 ShowOptions();
                 var command = ReadInput();
                 int commandInt = intCheck(command);
 
-                SelectMethod(commandInt);
+                await SelectMethod (commandInt);
 
                 restart = yesOrNoBox("Do you want to go back to main menu?") == "y";
             }
@@ -36,7 +47,7 @@ namespace LibaryBookApp
             {
                 Console.Clear();
                 Console.WriteLine("Returning to main menu...");
-                StartApp();
+                StartApp().GetAwaiter();
             }
             return input.ToString();
         }
@@ -56,50 +67,50 @@ namespace LibaryBookApp
             Console.WriteLine("---------------------------------------------------------------");
         }
 
-        public static void SelectMethod(int command)
+        public static async Task SelectMethod(int command)
         {
             switch (command)
             {
                 case 1:
-                    RegisterUser();
+                    await RegisterUser();
                     break;
                 case 2:
-                    RegisterBook();
+                    await RegisterBook();
                     break;
                 case 3:
-                    LoanBook();
+                    await LoanBook();
                     break;
                 case 4:
-                    ReturnBook();
+                    await ReturnBook();
                     break;
                 case 5:
-                    RemoveBook();
+                    await RemoveBook();
                     break;
                 case 6:
-                    ListBook();
+                    await ListBook();
                     break;
                 case 7:
-                    ListAllBooks();
+                    await ListAllBooks();
                     break;
             }
         }
 
-        public static void RegisterUser()
+        public static async Task RegisterUser()
         {
             Console.WriteLine("------------------- Let's Add a New User ---------------------");
             Console.WriteLine("Type Name");
             var userName = ReadInput().ToString();
             Console.WriteLine("Type Email");
             var userEmail = ReadInput().ToString();
-            if (DbOps.UserExists(userEmail))
+            if (await _userRepository.Exists(userEmail))
             {
                 Console.WriteLine("User Already Exists!");
-                RegisterUser();
+                await RegisterUser();
             }
             else
             {
                 User user = new User(userName, userEmail);
-                bool success = DbOps.AddUser(user);
+                bool success = await _userRepository.Add(user);
                 if (success)
                 {
                     Console.WriteLine("User Registered!");
@@ -107,16 +118,15 @@ namespace LibaryBookApp
                 else
                 {
                     Console.WriteLine("Error While Registrating User!");
-                    RegisterUser();
+                    await RegisterUser();
                 }
             }
         }
 
-        public static void ListAllBooks()
+        public static async Task ListAllBooks()
         {
             //var books = DbOps.GetAllBooks();
-            BookRepository bookRepo = new BookRepository();
-            var books = bookRepo.FindAll();
+            var books = await _bookRepository.FindAll();
             Console.WriteLine($"List of All Libary Books:");
             foreach (var book in books)
             {
@@ -131,9 +141,9 @@ namespace LibaryBookApp
             Console.WriteLine($"End of the List!");
         }
 
-        public static void ListBook()
+        public static async Task ListBook()
         {
-            var book = FindBook();
+            var book = await FindBook();
             Console.WriteLine($"ID - {book.Id}");
             Console.WriteLine($"Title - {book.Title}");
             Console.WriteLine($"Author - {book.Author}");
@@ -178,7 +188,7 @@ namespace LibaryBookApp
             return response.Trim().ToLower();
         }
 
-        public static void RegisterBook()
+        public static async Task RegisterBook()
         {
             Console.WriteLine("------------------- Let's Add a New Book ---------------------");
             Console.WriteLine("Type Book Title");
@@ -191,15 +201,15 @@ namespace LibaryBookApp
             var yearRaw = ReadInput();
             int year = intCheck(yearRaw);
 
-            if (DbOps.GetBook(2, ISBN) != null)
+            if (await _bookRepository.Find(2, ISBN) != null)
             {
                 Console.WriteLine("Book Already Registered!");
-                RegisterBook();
+                await RegisterBook();
             }
             else
             {
                 Book book = new Book(Title, Author, ISBN, year);
-                bool success = DbOps.AddBook(book);
+                bool success = await _bookRepository.Add(book);
                 if (success)
                 {
                     Console.WriteLine("Book Registered!");
@@ -207,19 +217,19 @@ namespace LibaryBookApp
                 else
                 {
                     Console.WriteLine("Error While Registrating Book!");
-                    RegisterBook();
+                    await RegisterBook();
                 }
             }
         }
 
 
-        public static void LoanBook()
+        public static async Task LoanBook()
         {
             Console.WriteLine("------------------- Let's Register a Loan ---------------------");
 
-            var user = FindUser();
+            var user = await FindUser();
 
-            var book = FindBook();
+            var book = await FindBook();
 
             DateTime? loanDate = null;
             var customLoanDate = yesOrNoBox("Set Custom Loan Date");
@@ -237,7 +247,7 @@ namespace LibaryBookApp
 
             Loan loan = new Loan(user.Id, book.Id, loanDate, loanPeriod);
 
-            bool success = DbOps.AddLoan(loan);
+            bool success = await _loanRepository.Add(loan);
             if (success)
             {
                 Console.WriteLine("Book Loaned!");
@@ -245,15 +255,15 @@ namespace LibaryBookApp
             else
             {
                 Console.WriteLine("Error While Loaning Book!");
-                LoanBook();
+                await LoanBook();
             }
         }
 
-        public static void ReturnBook()
+        public static async Task ReturnBook()
         {
             Console.WriteLine("------------------- Let's Return a Book ---------------------");
-            var user = FindUser();
-            var activeLoans = DbOps.GetActiveLoansByUserId(user.Id);
+            var user = await FindUser();
+            var activeLoans = await _loanRepository.GetActiveLoansByUserId(user.Id);
             Console.WriteLine("------------------- List of User's Loaned Books ---------------------");
             foreach (var loan in activeLoans)
             {
@@ -274,7 +284,7 @@ namespace LibaryBookApp
             if (confirmReturn.Equals("y"))
             {
                 selectedLoan.BookReturned = true;
-                var success = DbOps.EditLoan(selectedLoan);
+                var success = await _loanRepository.Alter(selectedLoan);
                 if (success)
                 {
                     Console.WriteLine("Book Returned!");
@@ -287,13 +297,13 @@ namespace LibaryBookApp
 
         }
 
-        public static void RemoveBook()
+        public static async Task RemoveBook()
         {
-            var book = FindBook();
+            var book = await FindBook();
             string confirmRemove = yesOrNoBox($"Confirm removing book {book.Title}?");
             if (confirmRemove.Equals("y"))
             {
-                var success = DbOps.RemoveBook(book);
+                var success = await _bookRepository.Remove(book);
                 if (success)
                 {
                     Console.WriteLine("Book Removed!");
@@ -305,7 +315,7 @@ namespace LibaryBookApp
             }
         }
 
-        public static Book FindBook()
+        public static async Task<Book> FindBook()
         {
             Console.WriteLine("Chose an Searcher for Book:");
             Console.WriteLine("1. By Book Title");
@@ -322,7 +332,7 @@ namespace LibaryBookApp
             Console.WriteLine("Enter searcher book value:");
             object param = ReadInput();
 
-            var book = DbOps.GetBook(command, param);
+            var book = await _bookRepository.Find(command, param);
             if (book != null)
             {
                 return book;
@@ -330,19 +340,19 @@ namespace LibaryBookApp
             else
             {
                 Console.WriteLine("Book Not Found!!!!");
-                return FindBook();
+                return await FindBook();
             }
         }
 
-        public static User FindUser()
+        public static async Task<User> FindUser()
         {
             Console.WriteLine("Type User Email:");
-            var user = DbOps.GetUser(ReadInput());
+            var user = await _userRepository.GetUserbyEmail(ReadInput());
             while (user == null)
             {
                 Console.WriteLine("User Not Found!!!!");
                 Console.WriteLine("Type User Email:");
-                user = DbOps.GetUser(ReadInput());
+                user = await _userRepository.GetUserbyEmail(ReadInput());
             }
             return user;
         }

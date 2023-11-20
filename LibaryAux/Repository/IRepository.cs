@@ -7,19 +7,14 @@ using System.Threading.Tasks;
 
 namespace LibaryAux.Repository
 {
-    public interface IRepository
+    public interface IRepository<T>
     {
-        public interface IRepository<TEntity>
-        {
-            LibaryContext db { get; }
-            Task<bool> Add(TEntity entity);
-            Task<bool> Alter(TEntity entity);
-            Task<bool> Remove(TEntity entity);
-            Task<TEntity> FindById(int id);
-            Task<List<TEntity>> FindAll();
-            Task<bool> Exists(object param);
-
-        }
+        Task<bool> Add(T entity);
+        Task<bool> Alter(T entity);
+        Task<bool> Remove(T entity);
+        Task<T> FindById(int id);
+        Task<List<T>> FindAll();
+        Task<bool> Exists(object param);
 
     }
 }

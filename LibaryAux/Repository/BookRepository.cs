@@ -6,53 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static LibaryAux.Enums.SearchEnums;
-using static LibaryAux.Repository.IRepository;
 
 namespace LibaryAux.Repository
 {
-    public class BookRepository : IRepository<Book>
+    public class BookRepository : Repository<Book>, IRepository<Book>
     {
-        public LibaryContext db => new LibaryContext();
 
-        public async Task<bool> Add(Book entity)
-        {
-            try
-            {
-                db.Books.Add(entity);
-                await db.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            };
-        }
-
-        public async Task<bool> Alter(Book entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> Exists(object param)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<List<Book>> FindAll()
-        {
-            try
-            {
-                var books = await db.Set<Book>().ToListAsync();
-
-                return books;
-            }
-            catch (Exception ex)
-            {
-                return new List<Book>();
-            }
-        }
-
-        public async Task<Book> FindById(int id)
+        public override async Task<bool> Exists(object param)
         {
             throw new NotImplementedException();
         }
@@ -79,20 +39,6 @@ namespace LibaryAux.Repository
             catch (Exception ex)
             {
                 return null;
-            }
-        }
-
-        public async Task<bool> Remove(Book entity)
-        {
-            try
-            {
-                db.Set<Book>().Remove(entity);
-                await db.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
             }
         }
     }
