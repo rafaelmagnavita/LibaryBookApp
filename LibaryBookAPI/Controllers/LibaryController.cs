@@ -46,50 +46,50 @@ namespace LibaryBookAPI.Controllers
             }
         }
 
-        //[HttpGet]
-        //public async virtual Task<IActionResult> CheckExistence(object param)
-        //{
-        //    try
-        //    {
-        //        bool exists = await _repository.Exists(param);
-        //        return Ok(exists);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Internal Server Error: {ex}");
-        //    }
-        //}
+        [HttpGet("CheckExistence")]
+        public async virtual Task<IActionResult> CheckExistence(string param)
+        {
+            try
+            {
+                bool exists = await _repository.Exists(param);
+                return Ok(exists);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex}");
+            }
+        }
 
-        //[HttpGet]
-        //public async virtual Task<IActionResult> GetAll()
-        //{
-        //    try
-        //    {
-        //        var result = await _repository.FindAll();
-        //        return Ok(JsonConvert.SerializeObject(result));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Internal Server Error: {ex}");
-        //    }
-        //}
+        [HttpGet("GetAll")]
+        public async virtual Task<IActionResult> GetAll()
+        {
+            try
+            {
+                var result = await _repository.FindAll();
+                return Ok(JsonConvert.SerializeObject(result));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex}");
+            }
+        }
 
-        //[HttpGet("{id}")]
-        //public async virtual Task<IActionResult> GetById(int id)
-        //{
-        //    try
-        //    {
-        //        var result = await _repository.FindById(id);
-        //        if (result != null)
-        //            return Ok(JsonConvert.SerializeObject(result));
-        //        else
-        //            return NotFound($"Could not find entity for id: {id}");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Internal Server Error: {ex}");
-        //    }
-        //}
+        [HttpGet("GetById")]
+        public async virtual Task<IActionResult> GetById(int id)
+        {
+            try
+            {
+                var result = await _repository.FindById(id);
+                if (result != null)
+                    return Ok(JsonConvert.SerializeObject(result));
+                else
+                    return NotFound($"Could not find entity for id: {id}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex}");
+            }
+        }
 
         [HttpDelete]
         public async virtual Task<IActionResult> Delete(int id)

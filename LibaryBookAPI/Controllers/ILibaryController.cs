@@ -11,8 +11,8 @@ namespace LibaryBookAPI.Controllers
         Task<IActionResult> Create(T entity);
         Task<IActionResult> Update(T entity);
         Task<IActionResult> Delete(int id);
-        //Task<IActionResult> GetById(int id);
-        //Task<IActionResult> GetAll();
-        //Task<IActionResult> CheckExistence(object param);
+        Task<IActionResult> GetById(int id);
+        Task<IActionResult> GetAll();
+        Task<IActionResult> CheckExistence(string param);
     }
 }
