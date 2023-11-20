@@ -1,5 +1,5 @@
 ﻿using LibaryAux.Context;
-using LibaryAux.Entities;
+using LibaryDomain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

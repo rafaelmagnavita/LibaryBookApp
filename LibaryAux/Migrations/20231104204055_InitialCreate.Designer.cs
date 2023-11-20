@@ -21,7 +21,7 @@ namespace LibaryAux.Migrations
                 .HasAnnotation("ProductVersion", "5.0.17")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("LibaryAux.Entities.Book", b =>
+            modelBuilder.Entity("LibaryDomain.Entities.Book", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -45,7 +45,7 @@ namespace LibaryAux.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("LibaryAux.Entities.Loan", b =>
+            modelBuilder.Entity("LibaryDomain.Entities.Loan", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -69,7 +69,7 @@ namespace LibaryAux.Migrations
                     b.ToTable("Loans");
                 });
 
-            modelBuilder.Entity("LibaryAux.Entities.User", b =>
+            modelBuilder.Entity("LibaryDomain.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

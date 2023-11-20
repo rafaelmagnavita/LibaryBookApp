@@ -1,6 +1,6 @@
 ﻿using LibaryAux;
-using LibaryAux.Entities;
-using LibaryAux.Enums;
+using LibaryDomain.Entities;
+using LibaryDomain.Enums;
 using LibaryAux.Repository;
 using System;
 using System.Linq;

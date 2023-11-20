@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibaryAux.Enums
+namespace LibaryDomain.Enums
 {
     public static class SearchEnums
     {

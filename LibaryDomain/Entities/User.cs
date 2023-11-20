@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibaryAux.Entities
+namespace LibaryDomain.Entities
 {
     public class User
     {

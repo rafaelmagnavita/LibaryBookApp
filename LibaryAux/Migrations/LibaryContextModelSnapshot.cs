@@ -19,7 +19,7 @@ namespace LibaryAux.Migrations
                 .HasAnnotation("ProductVersion", "5.0.17")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("LibaryAux.Entities.Book", b =>
+            modelBuilder.Entity("LibaryDomain.Entities.Book", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -43,7 +43,7 @@ namespace LibaryAux.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("LibaryAux.Entities.Loan", b =>
+            modelBuilder.Entity("LibaryDomain.Entities.Loan", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -74,7 +74,7 @@ namespace LibaryAux.Migrations
                     b.ToTable("Loans");
                 });
 
-            modelBuilder.Entity("LibaryAux.Entities.User", b =>
+            modelBuilder.Entity("LibaryDomain.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -92,15 +92,15 @@ namespace LibaryAux.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("LibaryAux.Entities.Loan", b =>
+            modelBuilder.Entity("LibaryDomain.Entities.Loan", b =>
                 {
-                    b.HasOne("LibaryAux.Entities.Book", "Book")
+                    b.HasOne("LibaryDomain.Entities.Book", "Book")
                         .WithMany()
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LibaryAux.Entities.User", "User")
+                    b.HasOne("LibaryDomain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
