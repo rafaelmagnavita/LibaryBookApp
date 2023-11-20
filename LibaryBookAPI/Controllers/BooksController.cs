@@ -10,7 +10,6 @@ using LibaryAux.Repository;
 
 namespace LibaryBookAPI.Controllers
 {
-
     public class BooksController : LibaryController<Book>
     {
         public BooksController(BookRepository bookRepository) : base(bookRepository)

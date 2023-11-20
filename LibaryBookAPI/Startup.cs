@@ -19,9 +19,10 @@ namespace LibaryBookAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MassTransit Marketing API", Version = "v1" });
             });
-            services.AddScoped<IRepository<Book>, BookRepository>();
-            //services.AddScoped<IRepository<Book>, BookRepository>();
-            //services.AddScoped<IRepository<Book>, BookRepository>();
+
+            services.AddSingleton<BookRepository>();
+            services.AddSingleton<LoanRepository>();
+            services.AddSingleton<UserLoginRepository>();
 
         }
 
