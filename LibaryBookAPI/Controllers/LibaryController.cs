@@ -11,7 +11,7 @@ namespace LibaryBookAPI.Controllers
     [ApiController]
     public class LibaryController<T> : ControllerBase, ILibraryController<T>
     {
-        protected IRepository<T> _repository;
+        private IRepository<T> _repository;
 
         public LibaryController(IRepository<T> repository)
         {
