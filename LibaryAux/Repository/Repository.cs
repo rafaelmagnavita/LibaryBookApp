@@ -12,26 +12,11 @@ namespace LibaryAux.Repository
     public class Repository<T> : IRepository<T> where T : class
     {
         protected readonly LibaryContext db;
-        //private readonly IEntityStrategy<T> _strategy;
         public Repository()
         {
             db = new LibaryContext();
-            //_strategy = strategy;
+      
         }
-
-        //public virtual async Task<bool> Add(T entity)
-        //{
-        //    try
-        //    {
-        //        await _strategy.AddEntity(db, entity);
-        //        await db.SaveChangesAsync();
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return false;
-        //    }
-        //}
 
         public virtual async Task<bool> Alter(T entity)
         {

@@ -1,3 +1,5 @@
+using LibaryAux.Repository;
+using LibaryDomain.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -17,6 +19,9 @@ namespace LibaryBookAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MassTransit Marketing API", Version = "v1" });
             });
+            services.AddScoped<IRepository<Book>, BookRepository>();
+            //services.AddScoped<IRepository<Book>, BookRepository>();
+            //services.AddScoped<IRepository<Book>, BookRepository>();
 
         }
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LibaryAux.Repository;
+using LibaryDomain.Entities;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,9 +8,11 @@ using System.Threading.Tasks;
 
 namespace LibaryBookAPI.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : LibaryController<User>
     {
+        public UsersController(UserLoginRepository userRepository) : base(userRepository)
+        {
+
+        }
     }
 }
