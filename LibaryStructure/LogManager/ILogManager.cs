@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibaryStructure.Log
+namespace LibaryStructure.LogManager
 {
-    class ILogManager
+    public interface ILogManager
     {
+        void Write(object content);
+        T Read<T>();
     }
 }
