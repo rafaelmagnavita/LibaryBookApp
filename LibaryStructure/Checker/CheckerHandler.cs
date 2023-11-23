@@ -1,4 +1,5 @@
 ﻿using LibaryStructure.Checker.Checkers;
+using LibaryStructure.LogManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,12 @@ namespace LibaryStructure.Checker
     {
         private IChecker _checker;
         private Type _type;
+        private ILogManager _console;
+
+        public CheckerHandler(ILogManager console)
+        {
+            _console = console;
+        }
 
         private void ChooseChecker()
         {
@@ -35,14 +42,18 @@ namespace LibaryStructure.Checker
         {
             _type = typeof(T);
             ChooseChecker();
+
+            if (_checker == null)
+                throw new ArgumentNullException("Invalid Type!");
+
             var isExpectedValue = _checker.CheckInput(input);
             while (!isExpectedValue)
             {
-                Console.WriteLine($"Invalid Input, please digit a valid {typeof(T)}!");
-                input = Console.ReadLine();
+                _console.Write($"Invalid Input, please digit a valid {typeof(T)}!");
+                input = _console.simpleRead();
                 isExpectedValue = _checker.CheckInput(input);
             }
-            return (T)_checker.convertedInput;
+            return (T)_checker.ReturnInput();
         }
     }
 }

@@ -6,16 +6,15 @@ using System.Threading.Tasks;
 
 namespace LibaryStructure.Checker.Checkers
 {
-    public class StringChecker : IChecker
+    public class StringChecker : Checker<string>, IChecker
     {
-        public object convertedInput { get; private set; }
-
-        public bool CheckInput(string input)
+        public override bool CheckInput(string input)
         {
             if (string.IsNullOrEmpty(input))
                 return false;
 
-            convertedInput = input;
+            setInput(input);
+
             return true;
         }
     }

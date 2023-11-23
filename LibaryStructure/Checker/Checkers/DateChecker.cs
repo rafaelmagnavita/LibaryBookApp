@@ -6,17 +6,16 @@ using System.Threading.Tasks;
 
 namespace LibaryStructure.Checker.Checkers
 {
-    public class DateChecker : IChecker
+    public class DateChecker : Checker<DateTime>, IChecker
     {
-        public object convertedInput { get; private set; }
 
-        public bool CheckInput(string input)
+        public  override bool CheckInput(string input)
         {
             var dateCheck = DateTime.TryParse(input, out DateTime dateValue);
             if (!dateCheck)
                 return false;
 
-            convertedInput = dateValue;
+            setInput(dateValue);
             return true;
         }
     }

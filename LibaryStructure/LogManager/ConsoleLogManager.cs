@@ -12,15 +12,15 @@ namespace LibaryStructure.LogManager
         CheckerHandler _checkerHandler;
         public ConsoleLogManager()
         {
-            _checkerHandler = new CheckerHandler();
+            _checkerHandler = new CheckerHandler(this);
         }
         public bool yesOrNoBox(string content)
         {
-            Console.WriteLine($"{content} (Y/N)?");
+            Write($"{content} (Y/N)?");
             var response = Read<string>();
             while (response.Trim().ToLower() != "y" && response.Trim().ToLower() != "n")
             {
-                Console.WriteLine("Invalid answer!");
+                Write("Invalid answer!");
                 response = Read<string>();
             }
 
@@ -28,9 +28,10 @@ namespace LibaryStructure.LogManager
             return responseBool;
         }
 
+
         public T Read<T>()
         {
-            var input = Console.ReadLine();
+            var input = simpleRead();
             var result = _checkerHandler.GetConvertedInput<T>(input);
             return result;
         }
@@ -43,6 +44,11 @@ namespace LibaryStructure.LogManager
             var contentString = content.ToString();
 
             Console.WriteLine(content);
+        }
+
+        public string simpleRead()
+        {
+            return Console.ReadLine();
         }
     }
 }

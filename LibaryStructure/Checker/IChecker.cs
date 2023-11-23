@@ -8,8 +8,8 @@ namespace LibaryStructure.Checker
 {
     public interface IChecker
     {
-        object convertedInput { get; }
-
         bool CheckInput(string input);
+
+        object ReturnInput();
     }
 }

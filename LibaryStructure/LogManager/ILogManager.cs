@@ -10,5 +10,6 @@ namespace LibaryStructure.LogManager
     {
         void Write(object content);
         T Read<T>();
+        string simpleRead();
     }
 }
