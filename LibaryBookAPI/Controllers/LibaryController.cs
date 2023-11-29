@@ -47,11 +47,11 @@ namespace LibaryBookAPI.Controllers
         }
 
         [HttpGet("CheckExistence")]
-        public async virtual Task<IActionResult> CheckExistence(string param)
+        public async virtual Task<IActionResult> CheckExistence(T entity)
         {
             try
             {
-                bool exists = await _repository.Exists(param);
+                bool exists = await _repository.Exists(entity);
                 return Ok(exists);
             }
             catch (Exception ex)

@@ -13,6 +13,6 @@ namespace LibaryBookAPI.Controllers
         Task<IActionResult> Delete(int id);
         Task<IActionResult> GetById(int id);
         Task<IActionResult> GetAll();
-        Task<IActionResult> CheckExistence(string param);
+        Task<IActionResult> CheckExistence(T entity);
     }
 }
