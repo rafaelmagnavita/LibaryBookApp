@@ -1,4 +1,6 @@
 ﻿using LibaryAux.Repository;
+using LibaryBookAPI.Handlers;
+using LibaryDomain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -9,13 +11,15 @@ namespace LibaryBookAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LibaryController<T> : ControllerBase, ILibraryController<T>
+    public class LibaryController<T> : ControllerBase, ILibraryController<T> where T : LibraryEntity<T>
     {
-        private IRepository<T> _repository;
+        private Repository<T> _repository;
+        private ITaskHandler<T> _handler;
 
-        public LibaryController(IRepository<T> repository)
+        public LibaryController(Repository<T> repository)
         {
             _repository = repository;
+            _handler = new HttpTaskHandler<T>(_repository);
         }
 
         [HttpPost]
@@ -24,7 +28,7 @@ namespace LibaryBookAPI.Controllers
             try
             {
                 var addedEntity = await _repository.Add(entity);
-                return Ok(entity);
+                return await _handler.HandleCRUD(addedEntity,entity);
             }
             catch (Exception ex)
             {
@@ -38,7 +42,7 @@ namespace LibaryBookAPI.Controllers
             try
             {
                 var updatedEntity = await _repository.Alter(entity);
-                return Ok(updatedEntity);
+                return await _handler.HandleCRUD(updatedEntity, entity);
             }
             catch (Exception ex)
             {
@@ -101,9 +105,9 @@ namespace LibaryBookAPI.Controllers
                 if (entity == null)
                     return StatusCode(404, "Entity not Found");
 
-                await _repository.Remove(entity);
+                var deletedEntity = await _repository.Remove(entity);
 
-                return Ok("Entity Removed");
+                return await _handler.HandleCRUD(deletedEntity, entity);
             }
             catch (Exception ex)
             {
