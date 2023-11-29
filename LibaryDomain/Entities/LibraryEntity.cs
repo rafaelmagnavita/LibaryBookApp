@@ -23,7 +23,8 @@ namespace LibaryDomain.Entities
 
         public virtual string GetInvalid()
         {
-            _validator.IsValid(_entity);
+            if (string.IsNullOrEmpty(_validator._invalidFields))
+                _validator.IsValid(_entity);
             return _validator._invalidFields;
         }
 
