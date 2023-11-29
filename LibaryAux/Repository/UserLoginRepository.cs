@@ -11,20 +11,10 @@ namespace LibaryAux.Repository
 {
     public class UserLoginRepository : Repository<User>, IRepository<User>
     {
-        public override async Task<bool> Exists(object emailObj)
+        public override async Task<bool> Exists(User entity)
         {
-            try
-            {
-                var email = emailObj.ToString();
-                var user = await db.Users.SingleOrDefaultAsync(bk => bk.Email.ToLower().Equals(email));
-                if (user != null)
-                    return true;
-                return false;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            _log = "Email Already Registered";
+            return await db.Users.AnyAsync(b => b.Email.Equals(entity.Email));
         }
 
         public async Task<User> GetUserbyEmail(string Email)

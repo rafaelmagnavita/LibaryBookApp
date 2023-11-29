@@ -1,5 +1,6 @@
 ﻿using LibaryAux.Context;
 using LibaryAux.Strategies;
+using LibaryDomain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,25 +10,33 @@ using System.Threading.Tasks;
 
 namespace LibaryAux.Repository
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public class Repository<T> : IRepository<T> where T : LibraryEntity<T>
     {
         protected readonly LibaryContext db;
+        public string _log;
         public Repository()
         {
             db = new LibaryContext();
-      
         }
-
         public virtual async Task<bool> Alter(T entity)
         {
             try
             {
-                db.Entry(entity).State = EntityState.Modified;
-                await db.SaveChangesAsync();
-                return true;
+                if (entity.IsValid())
+                {
+                    db.Entry(entity).State = EntityState.Modified;
+                    await db.SaveChangesAsync();
+                    return true;
+                }
+                else
+                {
+                    _log = entity.GetInvalid();
+                    return false;
+                }
             }
             catch (Exception ex)
             {
+                _log = ex.Message;
                 return false;
             }
         }
@@ -36,12 +45,23 @@ namespace LibaryAux.Repository
         {
             try
             {
-                db.Set<T>().Add(entity);
-                await db.SaveChangesAsync();
-                return true;
+                if (entity.IsValid())
+                {
+                    if (await Exists(entity))
+                        return false;
+                    db.Set<T>().Add(entity);
+                    await db.SaveChangesAsync();
+                    return true;
+                }
+                else
+                {
+                    _log = entity.GetInvalid();
+                    return false;
+                }
             }
             catch (Exception ex)
             {
+                _log = ex.Message;
                 return false;
             }
         }
@@ -56,6 +76,7 @@ namespace LibaryAux.Repository
             }
             catch (Exception ex)
             {
+                _log = ex.Message;
                 return false;
             }
         }
@@ -68,7 +89,8 @@ namespace LibaryAux.Repository
             }
             catch (Exception ex)
             {
-                throw new NotImplementedException();
+                _log = ex.Message;
+                throw null;
             }
         }
 
@@ -80,11 +102,12 @@ namespace LibaryAux.Repository
             }
             catch (Exception ex)
             {
-                throw new NotImplementedException();
+                _log = ex.Message;
+                throw null;
             }
         }
 
-        public virtual async Task<bool> Exists(object param)
+        public virtual async Task<bool> Exists(T entity)
         {
             throw new NotImplementedException();
         }

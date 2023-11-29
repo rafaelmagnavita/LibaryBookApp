@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibaryDomain.Validator;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LibaryDomain.Entities
 {
-    public class Loan
+    public class Loan : LibraryEntity<Loan>
     {
         [Key]
         public int Id { get; private set; }
@@ -22,7 +23,7 @@ namespace LibaryDomain.Entities
         public DateTime LoanDate { get; set; }
         public int LoanPeriod { get; set; }
 
-        public Loan(int user, int book, DateTime? loanDate = null, int? loanPeriod = null)
+        public Loan(int user, int book, DateTime? loanDate = null, int? loanPeriod = null) : base(new LoanValidator())
         {
             BookReturned = false;
             UserId = user;
@@ -35,10 +36,19 @@ namespace LibaryDomain.Entities
                 LoanPeriod = (int)LoanPeriod;
             else
                 LoanPeriod = 90;
+            SetEntity(this);
         }
-        public Loan()
+        public Loan() : base(new LoanValidator())
         {
+            SetEntity(this);
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is Loan loan &&
+                   UserId == loan.UserId
+                   && BookId == loan.BookId
+                   && LoanDate == loan.LoanDate;
+        }
     }
 }

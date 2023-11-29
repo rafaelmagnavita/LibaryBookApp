@@ -37,7 +37,7 @@ namespace LibaryBookApp
                 ShowOptions();
                 int commandInt = _console.Read<int>();
 
-                await SelectMethod (commandInt);
+                await SelectMethod(commandInt);
 
                 restart = _console.yesOrNoBox("Do you want to go back to main menu?");
             }
@@ -93,30 +93,23 @@ namespace LibaryBookApp
             var userName = _console.Read<string>();
             _console.Write("Type Email");
             var userEmail = _console.Read<string>();
-            if (await _userRepository.Exists(userEmail))
+
+            User user = new User(userName, userEmail);
+            bool success = await _userRepository.Add(user);
+            if (success)
             {
-                _console.Write("User Already Exists!");
-                await RegisterUser();
+                _console.Write("User Registered!");
             }
             else
             {
-                User user = new User(userName, userEmail);
-                bool success = await _userRepository.Add(user);
-                if (success)
-                {
-                    _console.Write("User Registered!");
-                }
-                else
-                {
-                    _console.Write("Error While Registrating User!");
-                    await RegisterUser();
-                }
+                _console.Write($"Error While Registrating User: {_userRepository._log}");
+                await RegisterUser();
             }
+
         }
 
         public static async Task ListAllBooks()
         {
-            //var books = DbOps.GetAllBooks();
             var books = await _bookRepository.FindAll();
             _console.Write($"List of All Libary Books:");
             foreach (var book in books)
@@ -155,24 +148,16 @@ namespace LibaryBookApp
             _console.Write("Type Publish Year");
             int year = _console.Read<int>();
 
-            if (await _bookRepository.Find(2, ISBN) != null)
+            Book book = new Book(Title, Author, ISBN, year);
+            bool success = await _bookRepository.Add(book);
+            if (success)
             {
-                _console.Write("Book Already Registered!");
-                await RegisterBook();
+                _console.Write("Book Registered!");
             }
             else
             {
-                Book book = new Book(Title, Author, ISBN, year);
-                bool success = await _bookRepository.Add(book);
-                if (success)
-                {
-                    _console.Write("Book Registered!");
-                }
-                else
-                {
-                    _console.Write("Error While Registrating Book!");
-                    await RegisterBook();
-                }
+                _console.Write($"Error While Registrating Book  {_bookRepository._log}");
+                await RegisterBook();
             }
         }
 
@@ -208,7 +193,7 @@ namespace LibaryBookApp
             }
             else
             {
-                _console.Write("Error While Loaning Book!");
+                _console.Write($"Error While Loaning Book: {_loanRepository._log}");
                 await LoanBook();
             }
         }
@@ -232,7 +217,6 @@ namespace LibaryBookApp
             }
 
             var selectedLoan = activeLoans.Where(a => a.Id.Equals(id)).FirstOrDefault();
-
             bool confirmReturn = _console.yesOrNoBox($"Confirm return of {selectedLoan.Book.Title} for {user.Name}");
 
             if (confirmReturn)
@@ -245,7 +229,7 @@ namespace LibaryBookApp
                 }
                 else
                 {
-                    _console.Write("Error while returning!");
+                    _console.Write($"Error while returning book {_loanRepository._log}");
                 }
             }
 
@@ -264,7 +248,7 @@ namespace LibaryBookApp
                 }
                 else
                 {
-                    _console.Write("Error while removing book!");
+                    _console.Write($"Error while removing book: {_bookRepository._log}");
                 }
             }
         }
@@ -279,10 +263,10 @@ namespace LibaryBookApp
             var maxEnumLenght = Enum.GetValues(typeof(SearchEnums.BookSearchCommand)).Length;
             while (command < 1 || command > maxEnumLenght)
             {
-
                 _console.Write("Command should be between 1 and 3!");
                 command = _console.Read<int>();
             }
+
             _console.Write("Enter searcher book value:");
             object param = _console.Read<object>();
 

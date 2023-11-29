@@ -12,9 +12,10 @@ namespace LibaryAux.Repository
     public class BookRepository : Repository<Book>, IRepository<Book>
     {
 
-        public override async Task<bool> Exists(object param)
+        public override async Task<bool> Exists(Book entity)
         {
-            throw new NotImplementedException();
+            _log = "ISBN Already Registered";
+            return await db.Books.AnyAsync(b => b.ISBN.Equals(entity.ISBN));
         }
 
         public async Task<Book> Find(int command, object param)

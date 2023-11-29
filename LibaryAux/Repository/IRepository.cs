@@ -14,7 +14,7 @@ namespace LibaryAux.Repository
         Task<bool> Remove(T entity);
         Task<T> FindById(int id);
         Task<List<T>> FindAll();
-        Task<bool> Exists(object param);
+        Task<bool> Exists(T entity);
 
     }
 }
