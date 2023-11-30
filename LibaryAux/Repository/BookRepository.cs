@@ -18,6 +18,31 @@ namespace LibaryAux.Repository
             return await db.Books.AnyAsync(b => b.ISBN.Equals(entity.ISBN));
         }
 
+        public async Task<object> ChangeStock(int bookId, int ammount)
+        {
+            try
+            {
+                Book book = await Find((int)BookSearchCommand.ID, bookId);
+                if (book == null)
+                    return "Invalid BookId";
+                if (ammount >= 0)
+                {
+                    book.AddStock(ammount);
+                }
+                else
+                {
+                    book.RemoveStock(ammount * (-1));
+                }
+                await Alter(book);
+                return book.Stock.Value;
+            }
+            catch (Exception ex)
+            {
+                return $"Error while updating stock {ex.Message}";
+            }
+        }
+
+
         public async Task<Book> Find(int command, object param)
         {
             try

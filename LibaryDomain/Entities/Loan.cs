@@ -43,12 +43,5 @@ namespace LibaryDomain.Entities
             SetEntity(this);
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj is Loan loan &&
-                   UserId == loan.UserId
-                   && BookId == loan.BookId
-                   && LoanDate == loan.LoanDate;
-        }
     }
 }

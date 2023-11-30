@@ -16,6 +16,7 @@ namespace LibaryDomain.Entities
         public string Author { get; set; }
         public string ISBN { get; set; }
         public int PublishYear { get; set; }
+        public int? Stock { get; private set; }
         public Book(string title, string author, string isbn, int publishYear) : base(new BookValidator())
         {
             Title = title;
@@ -28,10 +29,18 @@ namespace LibaryDomain.Entities
         {
             SetEntity(this);
         }
-        public override bool Equals(object obj)
+
+        public void AddStock(int count)
         {
-            return obj is Book book &&
-                   ISBN == book.ISBN;
+            if (Stock == null)
+                Stock = 0;
+            Stock += count;
+        }
+
+        public void RemoveStock(int count)
+        {
+            var value = Stock - count;
+            Stock = value >= 0 ? value : 0;
         }
     }
 }

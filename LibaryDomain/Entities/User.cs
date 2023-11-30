@@ -26,11 +26,5 @@ namespace LibaryDomain.Entities
             SetEntity(this);
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj is User user &&
-                   Email == user.Email;
-        }
-
     }
 }

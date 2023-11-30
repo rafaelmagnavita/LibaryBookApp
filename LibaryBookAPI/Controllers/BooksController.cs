@@ -18,6 +18,20 @@ namespace LibaryBookAPI.Controllers
             _bookRepository = bookRepository;
         }
 
+        [HttpPost("EditStock")]
+        public async Task<IActionResult> EditStock(int id, int value)
+        {
+            try
+            {
+                var result = await _bookRepository.ChangeStock(id, value);
+                return Ok(JsonConvert.SerializeObject(result));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex}");
+            }
+        }
+
         [HttpPost("Find")]
         public async Task<IActionResult> Find(int command, object param)
         {
