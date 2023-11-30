@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibaryBookAPI", "LibaryBook
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibaryDomain", "LibaryDomain\LibaryDomain.csproj", "{D3495B47-92BA-436A-91FA-7F8D21F3C1C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibaryStructure", "LibaryStructure\LibaryStructure.csproj", "{FF7CAF0C-E75F-4FE1-B5AA-EE18CAE5732E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibaryStructure", "LibaryStructure\LibaryStructure.csproj", "{FF7CAF0C-E75F-4FE1-B5AA-EE18CAE5732E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryHttpClient", "LibraryHttpClient\LibraryHttpClient.csproj", "{C3C1BADE-58FF-4546-88AA-613D22382436}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{FF7CAF0C-E75F-4FE1-B5AA-EE18CAE5732E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF7CAF0C-E75F-4FE1-B5AA-EE18CAE5732E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF7CAF0C-E75F-4FE1-B5AA-EE18CAE5732E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3C1BADE-58FF-4546-88AA-613D22382436}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3C1BADE-58FF-4546-88AA-613D22382436}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3C1BADE-58FF-4546-88AA-613D22382436}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3C1BADE-58FF-4546-88AA-613D22382436}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

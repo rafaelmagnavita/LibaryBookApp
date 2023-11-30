@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LibaryAux\LibaryAux.csproj" />
     <ProjectReference Include="..\LibaryStructure\LibaryStructure.csproj" />
+    <ProjectReference Include="..\LibraryHttpClient\LibraryHttpClient.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,25 +1,21 @@
-﻿using LibaryAux;
-using LibaryDomain.Entities;
+﻿using LibaryDomain.Entities;
 using LibaryDomain.Enums;
-using LibaryAux.Repository;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using LibaryStructure.LogManager;
-
+using LibraryHttpClient;
+using System.Collections;
+using System.Collections.Generic;
+using LibaryStructure.Helpers;
 namespace LibaryBookApp
 {
     public class Program
     {
-        private static BookRepository _bookRepository;
-        private static LoanRepository _loanRepository;
-        private static UserLoginRepository _userRepository;
         private static ConsoleLogManager _console;
+        private static Client _client;
         public static void Initialize()
         {
-            _bookRepository = new BookRepository();
-            _loanRepository = new LoanRepository();
-            _userRepository = new UserLoginRepository();
             _console = new ConsoleLogManager();
         }
         static async Task Main(string[] args)
@@ -33,6 +29,7 @@ namespace LibaryBookApp
             while (restart)
             {
                 Console.Clear();
+                _client = new Client("http://127.0.0.1:5000");
                 Initialize();
                 ShowOptions();
                 int commandInt = _console.Read<int>();
@@ -95,14 +92,14 @@ namespace LibaryBookApp
             var userEmail = _console.Read<string>();
 
             User user = new User(userName, userEmail);
-            bool success = await _userRepository.Add(user);
+            bool success = await _client.PostApiData("/Users/Create", user) == 200;
             if (success)
             {
                 _console.Write("User Registered!");
             }
             else
             {
-                _console.Write($"Error While Registrating User: {_userRepository._log}");
+                _console.Write($"Error While Registrating User");
                 await RegisterUser();
             }
 
@@ -110,7 +107,7 @@ namespace LibaryBookApp
 
         public static async Task ListAllBooks()
         {
-            var books = await _bookRepository.FindAll();
+            var books = await _client.GetApiData<ICollection<Book>>("/Books/GetAll");
             _console.Write($"List of All Libary Books:");
             foreach (var book in books)
             {
@@ -149,14 +146,14 @@ namespace LibaryBookApp
             int year = _console.Read<int>();
 
             Book book = new Book(Title, Author, ISBN, year);
-            bool success = await _bookRepository.Add(book);
+            bool success = await _client.PostApiData("/Books/Create", book) == 200;
             if (success)
             {
                 _console.Write("Book Registered!");
             }
             else
             {
-                _console.Write($"Error While Registrating Book  {_bookRepository._log}");
+                _console.Write($"Error While Registrating Book");
                 await RegisterBook();
             }
         }
@@ -186,14 +183,14 @@ namespace LibaryBookApp
 
             Loan loan = new Loan(user.Id, book.Id, loanDate, loanPeriod);
 
-            bool success = await _loanRepository.Add(loan);
+            bool success = await _client.PostApiData("/Loans/Create", loan) == 200;
             if (success)
             {
                 _console.Write("Book Loaned!");
             }
             else
             {
-                _console.Write($"Error While Loaning Book: {_loanRepository._log}");
+                _console.Write($"Error While Loaning Book");
                 await LoanBook();
             }
         }
@@ -202,7 +199,8 @@ namespace LibaryBookApp
         {
             _console.Write("------------------- Let's Return a Book ---------------------");
             var user = await FindUser();
-            var activeLoans = await _loanRepository.GetActiveLoansByUserId(user.Id);
+            DictionaryHelper.SetParam("userId", user.Id, true);
+            var activeLoans = await _client.GetApiData<ICollection<Loan>>("/Loans/ActiveLoansByUserId", DictionaryHelper.GetDictionary());
             _console.Write("------------------- List of User's Loaned Books ---------------------");
             foreach (var loan in activeLoans)
             {
@@ -222,14 +220,14 @@ namespace LibaryBookApp
             if (confirmReturn)
             {
                 selectedLoan.BookReturned = true;
-                var success = await _loanRepository.Alter(selectedLoan);
+                var success = await _client.PostApiData("/Loans/Update", selectedLoan) == 200;
                 if (success)
                 {
                     _console.Write("Book Returned!");
                 }
                 else
                 {
-                    _console.Write($"Error while returning book {_loanRepository._log}");
+                    _console.Write($"Error while returning book");
                 }
             }
 
@@ -241,14 +239,14 @@ namespace LibaryBookApp
             bool confirmRemove = _console.yesOrNoBox($"Confirm removing book {book.Title}?");
             if (confirmRemove)
             {
-                var success = await _bookRepository.Remove(book);
+                var success = await _client.PostApiData("/Books/Delete", book.Id) == 200;
                 if (success)
                 {
                     _console.Write("Book Removed!");
                 }
                 else
                 {
-                    _console.Write($"Error while removing book: {_bookRepository._log}");
+                    _console.Write($"Error while removing book");
                 }
             }
         }
@@ -269,8 +267,9 @@ namespace LibaryBookApp
 
             _console.Write("Enter searcher book value:");
             object param = _console.Read<object>();
-
-            var book = await _bookRepository.Find(command, param);
+            DictionaryHelper.SetParam("command", command, true);
+            DictionaryHelper.SetParam("param", param);
+            var book = await _client.GetApiData<Book>("/Books/Find", DictionaryHelper.GetDictionary());
             if (book != null)
             {
                 return book;
@@ -285,12 +284,14 @@ namespace LibaryBookApp
         public static async Task<User> FindUser()
         {
             _console.Write("Type User Email:");
-            var user = await _userRepository.GetUserbyEmail(_console.Read<string>());
+            DictionaryHelper.SetParam("email", _console.Read<string>(), true);
+            var user = await _client.GetApiData<User>("/Users/GetByEmail", DictionaryHelper.GetDictionary());
             while (user == null)
             {
                 _console.Write("User Not Found!!!!");
                 _console.Write("Type User Email:");
-                user = await _userRepository.GetUserbyEmail(_console.Read<string>());
+                DictionaryHelper.SetParam("email", _console.Read<string>(), true);
+                user = await _client.GetApiData<User>("/Users/GetByEmail", DictionaryHelper.GetDictionary());
             }
             return user;
         }
